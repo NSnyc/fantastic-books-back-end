@@ -12,15 +12,8 @@ async function bookSearch(req, res){
     const bookResponseData = [...bookData.items]
     bookResponseData.map(book => {
       
-      if (book.volumeInfo.title) {
-        if (book.volumeInfo.subtitle) {
-          book.title = book.volumeInfo.title.concat(' (', book.volumeInfo.subtitle, ')')
-        } else {
-          book.title = book.volumeInfo.title
-        }
-      } else {
-        return ''
-      }
+      book.title = book.volumeInfo.title ? book.volumeInfo.title : ''
+      book.subtitle = book.volumeInfo.subtitle ? book.volumeInfo.tile : ''
       book.authors = book.volumeInfo.authors ? book.volumeInfo.authors : []
       book.cover = book.volumeInfo.imageLinks.thumbnail ? book.volumeInfo.imageLinks.thumbnail : ''
       book.published = book.volumeInfo.publishedDate ? book.volumeInfo.publishedDate : ''

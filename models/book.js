@@ -18,6 +18,10 @@ const bookSchema = new Schema({
     type: String,
     required: true,
   },
+  subtitle: {
+    type: String,
+    required: false,
+  },
   authors: {
     type: Array,
     required: true,
