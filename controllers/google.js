@@ -5,12 +5,13 @@ async function bookSearch(req, res){
   try {
     const bookResponse = await fetch(`${BASE_URL}${req.body.searchTerm}&key=${process.env.API_KEY}`)
     const bookData = await bookResponse.json()
-    // console.log(bookData.items[0])
-    // console.log(bookData.items)
+    console.log(bookData.items[0])
+    console.log(bookData) 
+    console.log(bookData.items)
     
     const bookResponseData = [...bookData.items]
     bookResponseData.map(book => {
-
+      
       if (book.volumeInfo.title) {
         if (book.volumeInfo.subtitle) {
           book.title = book.volumeInfo.title.concat(' (', book.volumeInfo.subtitle, ')')
@@ -27,7 +28,7 @@ async function bookSearch(req, res){
       book.pages = book.volumeInfo.pageCount ? book.volumeInfo.pageCount : 0
       book.categories = book.volumeInfo.categories ? book.volumeInfo.categories : []
       book.url = book.volumeInfo.previewLink ? book.volumeInfo.previewLink : ''
-      delete book.id
+      book.id = book.id ? book.id : ''
       delete book.etag
       delete book.saleInfo
       delete book.accessInfo
