@@ -30,4 +30,18 @@ async function addPhoto(req, res) {
   }
 }
 
-export { index, addPhoto }
+async function show(req, res){
+  try {
+    const profile = await Profile.findById(req.params.profileId)
+
+    if(!profile){
+      return res.status(404).json({error: 'Profile Not Found'})
+    }
+    res.status(200).json(profile)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
+export { index, addPhoto, show }
