@@ -7,7 +7,8 @@ const commentSchema = new Schema({
     type: String,
     required: true
   },
-  author: {type: Schema.Types.ObjectId, ref: 'Profile'}
+  commenter: {type: Schema.Types.ObjectId, ref: 'Profile'},
+  rating: {type: Number, min: 1, max: 5, default: 5}
 }, {
   timestamps: true
 })
@@ -17,7 +18,7 @@ const bookSchema = new Schema({
     type: String,
     required: true,
   },
-  author: {
+  authors: {
     type: Array,
     required: true,
   },
@@ -45,7 +46,6 @@ const bookSchema = new Schema({
     type: String,
     required: true,
   },
-  comments: {type: Schema.Types.ObjectId, ref: 'Profile'},
   comments: [commentSchema]
 },
   { timestamps: true }
