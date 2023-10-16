@@ -75,66 +75,7 @@ async function getBookDetailsById(req, res) {
 }
 
 
-// google.js - Controller
-
-export const addCommentToBook = async (req, res) => {
-  try {
-    const { volumeId } = req.params; // Get the volumeId from the URL
-    const { text, commenter, rating } = req.body; // Extract comment data from the request body
-
-    // First, you need to find the book by volumeId.
-    const book = await Book.findOne({ volumeId });
-
-    if (!book) {
-      return res.status(404).json({ error: 'Book not found' });
-    }
-
-    // Create a new comment based on your commentSchema and add it to the book.
-    const newComment = {
-      text,
-      commenter,
-      rating,
-    };
-
-    book.comments.push(newComment);
-
-    // Save the updated book document with the new comment.
-    await book.save();
-
-    res.status(201).json({ message: 'Comment added successfully', comment: newComment });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to add comment' });
-  }
-};
-
-export const getCommentsForBook = async (req, res) => {
-  try {
-    const { volumeId } = req.params; // Get the volumeId from the URL
-
-    // First, you need to find the book by volumeId.
-    const book = await Book.findOne({ volumeId });
-
-    if (!book) {
-      return res.status(404).json({ error: 'Book not found' });
-    }
-
-    // Extract and return the comments associated with the book.
-    const comments = book.comments;
-
-    res.status(200).json(comments);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to fetch comments' });
-  }
-};
-
-
-
-
 export {
   bookSearch,
   getBookDetailsById,
-  addCommentToBook,
-  getCommentsForBook
 }
