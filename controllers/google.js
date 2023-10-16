@@ -53,16 +53,16 @@ async function getBookDetailsById(req, res) {
       res.status(404).json({ error: 'Book not found' });
     } else {
       const bookDetails = {
-        id: bookData.id || '',
-        title: bookData.volumeInfo.title || '',
-        subtitle: bookData.volumeInfo.subtitle || '',
-        authors: bookData.volumeInfo.authors || [],
-        cover: bookData.volumeInfo.imageLinks?.large || '',
-        published: bookData.volumeInfo.published || '',
-        description: bookData.volumeInfo.description || '',
-        pages: bookData.volumeInfo.pageCount || 0,
-        categories: bookData.volumeInfo.categories || [],
-        url: bookData.volumeInfo.previewLink || ''
+        id: bookData.id ? bookData.id : '',
+        title: bookData.volumeInfo.title ? bookData.volumeInfo.title: '',
+        subtitle: bookData.volumeInfo.subtitle ? bookData.volumeInfo.subtitle : '',
+        authors: bookData.volumeInfo.authors ? bookData.volumeInfo.authors : [],
+        cover: bookData.volumeInfo.imageLinks?.large ? bookData.volumeInfo.imageLinks?.large :  bookData.volumeInfo.imageLinks?.thumbnail,
+        published: bookData.volumeInfo.published ? bookData.volumeInfo.published : '',
+        description: bookData.volumeInfo.description ? bookData.volumeInfo.description : '',
+        pages: bookData.volumeInfo.pageCount ? bookData.volumeInfo.pageCount : 0,
+        categories: bookData.volumeInfo.categories ? bookData.volumeInfo.categories : [],
+        url: bookData.volumeInfo.previewLink ? bookData.volumeInfo.previewLink : ''
         // Add other details here
       };
 
