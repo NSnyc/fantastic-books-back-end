@@ -40,7 +40,7 @@ export async function getBookDetailsByIdMiddleware(req, res, next) {
     }
 
     req.bookDetails = {
-      id: bookData.id ? bookData.id : '',
+      googleId: bookData.id ? bookData.id : '',
       title: bookData.volumeInfo.title ? bookData.volumeInfo.title : '',
       subtitle: bookData.volumeInfo.subtitle ? bookData.volumeInfo.subtitle : '',
       authors: bookData.volumeInfo.authors ? bookData.volumeInfo.authors : [],

@@ -29,9 +29,12 @@ export async function getBookDetails(req, res) {
 
 export async function createComment(req, res) {
   try {
+    console.log('reqUser:',req.user)
     req.body.commenter = req.user.profile
-    const volumeId = req.params.volumeId
-    const bookDetails = await getBookDetailsById(req, res, volumeId)
+    // const volumeId = req.params.volumeId
+    // const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req, res, volumeId)
+
+    const bookDetails = req.bookDetails;
 
     if (!bookDetails) {
       return res.status(404).json({ error: 'Book not found in the Google API' });
@@ -39,8 +42,14 @@ export async function createComment(req, res) {
     const newComment = {
       text: req.body.text,
       commenter: req.user.profile
-    }
-  
+    }//use the google id to find the book
+    //findwhere - query all books in my database to see if this book exists
+    //if it does exist push this comment into it
+    //if it doesnt create a new book with this data
+      //then pass this comment and save
+    // pass (add) the book information to the book model
+    console.log('BOOKDETAILS:',bookDetails)
+    console.log('comment', newComment)
     bookDetails.comments.push(newComment)
     await bookDetails.save()
     res.status(201).json(newComment)

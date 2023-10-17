@@ -50,6 +50,10 @@ const bookSchema = new Schema({
     type: String,
     required: true,
   },
+  googleId: {
+    type: String,
+    required: true,
+  },
   comments: [commentSchema]
 },
   { timestamps: true }
