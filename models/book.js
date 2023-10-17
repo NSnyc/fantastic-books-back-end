@@ -32,7 +32,7 @@ const bookSchema = new Schema({
   },
   published: {
     type: String,
-    required: true,
+    required: false,
   },
   description: {
     type: String,
@@ -43,10 +43,14 @@ const bookSchema = new Schema({
     required: false,
   },
   categories: {
-    type: String,
-    required: false,
+    type: Array,
+    required: true,
   },
   url: {
+    type: String,
+    required: true,
+  },
+  googleId: {
     type: String,
     required: true,
   },

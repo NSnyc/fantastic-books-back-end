@@ -1,6 +1,6 @@
 import { Book } from "../models/book.js"
 import { Profile } from "../models/profile.js"
-import * as googleMiddleware from '../middleware/helper.js'
+import * as googleMiddleware from '../config/helpers.js'
 
 
 export async function bookSearch(req, res) {
@@ -14,7 +14,7 @@ export async function bookSearch(req, res) {
 }
 export async function getBookDetails(req, res) {
   try {
-    const bookDetails = req.bookDetails;
+    const bookDetails = await googleMiddleware.fetchBooksMiddleware(req.body.searchTerm)
 
     if (!bookDetails) {
       return res.status(404).json({ error: 'Book not found in the Google API' });
@@ -29,21 +29,49 @@ export async function getBookDetails(req, res) {
 
 export async function createComment(req, res) {
   try {
+    console.log('reqUser:',req.user)
     req.body.commenter = req.user.profile
-    const volumeId = req.params.volumeId
-    const bookDetails = await getBookDetailsById(req, res, volumeId)
+
+    const bookDetails = req.bookDetails;
 
     if (!bookDetails) {
       return res.status(404).json({ error: 'Book not found in the Google API' });
     }
+
+    const { text, rating } = req.body
+
     const newComment = {
-      text: req.body.text,
-      commenter: req.user.profile
+      text,
+      commenter: req.user.profile,
+      rating: rating || 5
+    };
+
+    const existingBook = await Book.findOne({ googleId: bookDetails.googleId })
+
+    if (existingBook) {
+      existingBook.comments.push(newComment);
+      await existingBook.save();
+    } else {
+      const newBook = new Book({
+        title: bookDetails.title ? bookDetails.title : '',
+        subtitle: bookDetails.subtitle ? bookDetails.subtitle : '',
+        authors : bookDetails.authors ? bookDetails.authors : [],
+        cover: bookDetails.cover ? bookDetails.cover : '',
+        published: bookDetails.published ? bookDetails.published : '',
+        description: bookDetails.description ? bookDetails.description : '',
+        pages: bookDetails.pages ? bookDetails.pages : 0,
+        categories: bookDetails.categories ? bookDetails.categories : [],
+        url: bookDetails.url ? bookDetails.url : '',
+        googleId: bookDetails.googleId,
+        comments: [newComment]
+      });
+
+      await newBook.save();
     }
-  
-    bookDetails.comments.push(newComment)
-    await bookDetails.save()
-    res.status(201).json(newComment)
+    console.log('BOOKDETAILS:',bookDetails)
+    console.log('comment', newComment)
+    
+    res.status(201).json(newComment);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);

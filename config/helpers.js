@@ -1,11 +1,10 @@
 const BASE_URL = `https://www.googleapis.com/books/v1/volumes`;
 
-export async function fetchBooksMiddleware(req, res, next) {
+export async function fetchBooksMiddleware(searchTerm) {
   try {
-    const { searchTerm } = req.body; // Assuming the search term is in the request body
     const bookResponse = await fetch(`${BASE_URL}?q=${searchTerm}&key=${process.env.API_KEY}`);
     const bookData = await bookResponse.json();
-    req.bookData = bookData.items.map(book => ({
+    const bookInformation = bookData.items.map(book => ({
       id: book.id ? book.id : '',
       title: book.volumeInfo.title ? book.volumeInfo.title : '',
       subtitle: book.volumeInfo.subtitle ? book.volumeInfo.subtitle : '',
@@ -17,7 +16,7 @@ export async function fetchBooksMiddleware(req, res, next) {
       categories: book.volumeInfo.categories ? book.volumeInfo.categories : [],
       url: book.volumeInfo.previewLink ? book.volumeInfo.previewLink : '',
     }));
-    next();
+    return bookInformation
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
