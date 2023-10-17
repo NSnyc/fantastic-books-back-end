@@ -31,28 +31,47 @@ export async function createComment(req, res) {
   try {
     console.log('reqUser:',req.user)
     req.body.commenter = req.user.profile
-    // const volumeId = req.params.volumeId
-    // const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req, res, volumeId)
 
     const bookDetails = req.bookDetails;
 
     if (!bookDetails) {
       return res.status(404).json({ error: 'Book not found in the Google API' });
     }
+
+    const { text, rating } = req.body
+
     const newComment = {
-      text: req.body.text,
-      commenter: req.user.profile
-    }//use the google id to find the book
-    //findwhere - query all books in my database to see if this book exists
-    //if it does exist push this comment into it
-    //if it doesnt create a new book with this data
-      //then pass this comment and save
-    // pass (add) the book information to the book model
+      text,
+      commenter: req.user.profile,
+      rating: rating || 5
+    };
+
+    const existingBook = await Book.findOne({ googleId: bookDetails.googleId })
+
+    if (existingBook) {
+      existingBook.comments.push(newComment);
+      await existingBook.save();
+    } else {
+      const newBook = new Book({
+        title: bookDetails.title,
+        subtitle: bookDetails.subtitle,
+        authors : bookDetails.authors,
+        cover: bookDetails.cover,
+        published: bookDetails.published,
+        description: bookDetails.description,
+        pages: bookDetails.pages,
+        categories: bookDetails.categories,
+        url: bookDetails.url,
+        googleId: bookDetails.googleId,
+        comments: [newComment]
+      });
+
+      await newBook.save();
+    }
     console.log('BOOKDETAILS:',bookDetails)
     console.log('comment', newComment)
-    bookDetails.comments.push(newComment)
-    await bookDetails.save()
-    res.status(201).json(newComment)
+    
+    res.status(201).json(newComment);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
