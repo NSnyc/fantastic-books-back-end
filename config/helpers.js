@@ -2,7 +2,6 @@ const BASE_URL = `https://www.googleapis.com/books/v1/volumes`;
 
 export async function fetchBooksMiddleware(searchTerm, startIndex) {
   try {
-    console.log('startIndex:', startIndex)
     const bookResponse = await fetch(`${BASE_URL}?q=${searchTerm}&startIndex=${startIndex}&maxResults=10&key=${process.env.API_KEY}`);
     const bookData = await bookResponse.json();
     const bookInformation = bookData.items.map(book => ({
