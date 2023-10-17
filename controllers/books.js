@@ -1,6 +1,6 @@
 import { Book } from "../models/book.js"
 import { Profile } from "../models/profile.js"
-import * as googleMiddleware from '../middleware/helper.js'
+import * as googleMiddleware from '../config/helpers.js'
 
 
 export async function bookSearch(req, res) {
@@ -14,7 +14,7 @@ export async function bookSearch(req, res) {
 }
 export async function getBookDetails(req, res) {
   try {
-    const bookDetails = req.bookDetails;
+    const bookDetails = await googleMiddleware.fetchBooksMiddleware(req.body.searchTerm)
 
     if (!bookDetails) {
       return res.status(404).json({ error: 'Book not found in the Google API' });
@@ -53,15 +53,15 @@ export async function createComment(req, res) {
       await existingBook.save();
     } else {
       const newBook = new Book({
-        title: bookDetails.title,
-        subtitle: bookDetails.subtitle,
-        authors : bookDetails.authors,
-        cover: bookDetails.cover,
+        title: bookDetails.title ? bookDetails.title : '',
+        subtitle: bookDetails.subtitle ? bookDetails.subtitle : '',
+        authors : bookDetails.authors ? bookDetails.authors : [],
+        cover: bookDetails.cover ? bookDetails.cover : '',
         published: bookDetails.published ? bookDetails.published : '',
-        description: bookDetails.description,
-        pages: bookDetails.pages,
-        categories: bookDetails.categories,
-        url: bookDetails.url,
+        description: bookDetails.description ? bookDetails.description : '',
+        pages: bookDetails.pages ? bookDetails.pages : 0,
+        categories: bookDetails.categories ? bookDetails.categories : [],
+        url: bookDetails.url ? bookDetails.url : '',
         googleId: bookDetails.googleId,
         comments: [newComment]
       });
