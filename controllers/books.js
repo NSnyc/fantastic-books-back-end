@@ -5,7 +5,8 @@ import * as googleMiddleware from '../config/helpers.js'
 
 export async function bookSearch(req, res) {
   try {
-    const bookData = req.bookData;
+    // const bookData = req.bookData;
+    const bookData = await googleMiddleware.fetchBooksMiddleware(req.body.searchTerm)
     res.status(200).send(bookData);
   } catch (err) {
     console.log(err);
@@ -14,7 +15,7 @@ export async function bookSearch(req, res) {
 }
 export async function getBookDetails(req, res) {
   try {
-    const bookDetails = await googleMiddleware.fetchBooksMiddleware(req.body.searchTerm)
+    const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.body.volumeId)
 
     if (!bookDetails) {
       return res.status(404).json({ error: 'Book not found in the Google API' });
@@ -32,7 +33,7 @@ export async function createComment(req, res) {
     console.log('reqUser:',req.user)
     req.body.commenter = req.user.profile
 
-    const bookDetails = req.bookDetails;
+    const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.body.volumeId)
 
     if (!bookDetails) {
       return res.status(404).json({ error: 'Book not found in the Google API' });

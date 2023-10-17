@@ -23,7 +23,7 @@ export async function fetchBooksMiddleware(searchTerm) {
   }
 }
 
-export async function getBookDetailsByIdMiddleware(req, res, next) {
+export async function getBookDetailsByIdMiddleware(VolumeId) {
   try {
     const { volumeId } = req.params
 
