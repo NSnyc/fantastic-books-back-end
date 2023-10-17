@@ -57,7 +57,7 @@ export async function createComment(req, res) {
         subtitle: bookDetails.subtitle,
         authors : bookDetails.authors,
         cover: bookDetails.cover,
-        published: bookDetails.published,
+        published: bookDetails.published ? bookDetails.published : '',
         description: bookDetails.description,
         pages: bookDetails.pages,
         categories: bookDetails.categories,
