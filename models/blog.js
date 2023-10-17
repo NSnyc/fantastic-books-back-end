@@ -8,7 +8,7 @@ const blogCommentSchema = new Schema(
       type: String,
       required: true
     },
-    author: { type: Schema.Types.ObjectId, ref: 'Profile' }
+    blogCommenter: { type: Schema.Types.ObjectId, ref: 'Profile' }
   },
   { timestamps: true }
 )
