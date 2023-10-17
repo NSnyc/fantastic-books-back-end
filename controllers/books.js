@@ -7,7 +7,8 @@ import { populate } from "dotenv";
 export async function bookSearch(req, res) {
   try {
     // const bookData = req.bookData;
-    const bookData = await googleMiddleware.fetchBooksMiddleware(req.body.searchTerm)
+    const bookData = await googleMiddleware.fetchBooksMiddleware(req.body.searchTerm, req.body.startIndex)
+    // const startIndex = await googleMiddleware.fetchBooksMiddleware(req.body.startIndex)
     res.status(200).send(bookData);
   } catch (err) {
     console.log(err);
