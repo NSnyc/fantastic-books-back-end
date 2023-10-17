@@ -1,6 +1,7 @@
 import { Book } from "../models/book.js"
 import { Profile } from "../models/profile.js"
 import * as googleMiddleware from '../config/helpers.js'
+import { populate } from "dotenv";
 
 
 export async function bookSearch(req, res) {
@@ -69,11 +70,29 @@ export async function createComment(req, res) {
       });
 
       await newBook.save();
+      const populatedComment = await newComment.execPopulate()
     }
     console.log('BOOKDETAILS:',bookDetails)
     console.log('comment', newComment)
     
     res.status(201).json(newComment);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+}
+
+export async function getComments(req, res){
+  try {
+    const { volumeId } = req.params;
+    const book = await Book.findOne({ googleId: volumeId })
+    .populate('comments.commenter')
+
+    if (!book) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+    const comments = book.comments
+    res.status(200).json(comments)
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
