@@ -15,5 +15,6 @@ router.post('/', bookCtrl.bookSearch);
 router.use(decodeUserFromToken)
 router.post('/:volumeId/comments', checkAuth, bookCtrl.createComment)
 router.put('/:volumeId/comments/:commentId', checkAuth, bookCtrl.updateComment)
+router.delete('/:volumeId/comments/:commentId', checkAuth, bookCtrl.deleteComment)
 
 export { router }
