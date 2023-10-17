@@ -80,4 +80,19 @@ export async function createComment(req, res) {
   }
 }
 
-export async function
+export async function getComments(req, res){
+  try {
+    const { volumeId } = req.params;
+
+    const book = await Book.findOne({ googleId: volumeId })
+
+    if (!book) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+    const comments = book.comments
+    res.status(200).json(comments)
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+}
