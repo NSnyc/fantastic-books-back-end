@@ -5,7 +5,8 @@ const Schema = mongoose.Schema
 const profileSchema = new Schema({
   name: String,
   photo: String,
-  shelves: [{ type: Schema.Types.ObjectId, ref: 'Shelf' }]
+  shelves: [{ type: Schema.Types.ObjectId, ref: 'Shelf' }],
+  blogs: [{ type: Schema.Types.ObjectId, ref: 'Blog' }],
 },{
   timestamps: true,
 })
