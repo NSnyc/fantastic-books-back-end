@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const Schema = mongoose.Schema
 
-const commentSchema = new Schema(
+const blogCommentSchema = new Schema(
   {
     text: {
       type: String,
@@ -28,7 +28,7 @@ const blogSchema = new Schema(
     //   required: true,
     //   enum: ['News', 'Sports', 'Games', 'Movies', 'Music', 'Television'],
     // },
-    comments: [commentSchema],
+    blogComments: [blogCommentSchema],
     blogger: { type: Schema.Types.ObjectId, ref: 'Profile' }
   },
   { timestamps: true }
