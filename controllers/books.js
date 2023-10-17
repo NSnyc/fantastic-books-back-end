@@ -14,6 +14,7 @@ export async function bookSearch(req, res) {
     res.status(500).json(err);
   }
 }
+
 export async function getBookDetails(req, res) {
   try {
     const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.params.volumeId)
@@ -22,13 +23,13 @@ export async function getBookDetails(req, res) {
       return res.status(404).json({ error: 'Book not found in the Google API' });
     }
 
-
     res.status(200).json(bookDetails);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
   }
 }
+
 
 export async function createComment(req, res) {
   try {
@@ -70,7 +71,7 @@ export async function createComment(req, res) {
       });
 
       await newBook.save();
-      const populatedComment = await newComment.execPopulate()
+      const populatedComment = await newComment.populate()
     }
     console.log('BOOKDETAILS:',bookDetails)
     console.log('comment', newComment)
@@ -85,14 +86,36 @@ export async function createComment(req, res) {
 export async function getComments(req, res){
   try {
     const { volumeId } = req.params;
+    
     const book = await Book.findOne({ googleId: volumeId })
     .populate('comments.commenter')
 
     if (!book) {
       return res.status(404).json({ error: 'Book not found' });
     }
+
     const comments = book.comments
     res.status(200).json(comments)
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+}
+
+export const updateComment = async (req, res) => {
+  try {
+    const {volumeId, commentId} = req.params
+    console.log('volumeId:', req.params.volumeId);
+    console.log('commentId:', req.params.commentId);  
+    const book = await Book.findOne({ googleId: volumeId });
+
+    console.log('volumeId:', volumeId);
+    const comment = book.comments.id(commentId)
+    console.log('commentId:', commentId);
+    comment.text = req.body.text
+    comment.rating = req.body.rating
+    await book.save()
+    res.status(200).json
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
