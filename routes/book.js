@@ -9,6 +9,7 @@ const router = Router()
 
 // GET localhost:3001
 router.get('/:volumeId', googleMiddleware.getBookDetailsByIdMiddleware, bookCtrl.getBookDetails)
+router.get('/:volumeId/comments', bookCtrl.getComments)
 router.post('/', googleMiddleware.fetchBooksMiddleware, bookCtrl.bookSearch);
 
 /*---------- Protected Routes ----------*/
