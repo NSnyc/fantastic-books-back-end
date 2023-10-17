@@ -15,11 +15,12 @@ export async function bookSearch(req, res) {
 }
 export async function getBookDetails(req, res) {
   try {
-    const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.body.volumeId)
+    const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.params.volumeId)
 
-    if (!bookDetails) {
+    if (bookDetails.error) {
       return res.status(404).json({ error: 'Book not found in the Google API' });
     }
+
 
     res.status(200).json(bookDetails);
   } catch (err) {
@@ -33,7 +34,7 @@ export async function createComment(req, res) {
     console.log('reqUser:',req.user)
     req.body.commenter = req.user.profile
 
-    const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.body.volumeId)
+    const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.params.volumeId)
 
     if (!bookDetails) {
       return res.status(404).json({ error: 'Book not found in the Google API' });

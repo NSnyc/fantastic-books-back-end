@@ -23,13 +23,13 @@ export async function fetchBooksMiddleware(searchTerm) {
   }
 }
 
-export async function getBookDetailsByIdMiddleware(VolumeId) {
+export async function getBookDetailsByIdMiddleware(volumeId) {
   try {
-    const { volumeId } = req.params
+    // const { volumeId } = req.params
 
-    if (!volumeId) {
-      return res.status(400).json({ error: 'Missing volumeId in the request parameters' });
-    }
+    // if (!volumeId) {
+    //   return res.status(400).json({ error: 'Missing volumeId in the request parameters' });
+    // }
 
     const response = await fetch(`${BASE_URL}/${volumeId}?key=${process.env.API_KEY}`);
     const bookData = await response.json();
@@ -38,7 +38,7 @@ export async function getBookDetailsByIdMiddleware(VolumeId) {
       return res.status(404).json({ error: 'Book not found' });
     }
 
-    req.bookDetails = {
+      const bookDetails = {
       googleId: bookData.id ? bookData.id : '',
       title: bookData.volumeInfo.title ? bookData.volumeInfo.title : '',
       subtitle: bookData.volumeInfo.subtitle ? bookData.volumeInfo.subtitle : '',
@@ -53,7 +53,7 @@ export async function getBookDetailsByIdMiddleware(VolumeId) {
       url: bookData.volumeInfo.previewLink ? bookData.volumeInfo.previewLink : '',
     };
 
-    next(); // Move to the next middleware or route handler
+    return bookDetails; // Move to the next middleware or route handler
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch book details' });
