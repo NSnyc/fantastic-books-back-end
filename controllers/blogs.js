@@ -29,7 +29,18 @@ async function index(req, res) {
   }
 }
 
+async function show(req, res) {
+  try {
+    const blog = await Blog.findById(req.params.blogId)
+      .populate(['blogger', 'blogComments.blogCommenter'])
+    res.status(200).json(blog)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+}
+
 export {
   create,
   index,
+  show,
 }

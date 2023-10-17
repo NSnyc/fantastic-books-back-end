@@ -8,5 +8,6 @@ const router = Router()
 router.use(decodeUserFromToken)
 router.get('/', checkAuth, blogsCtrl.index)
 router.post('/', checkAuth, blogsCtrl.create)
+router.get('/:blogId', checkAuth, blogsCtrl.show)
 
 export { router }
