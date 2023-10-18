@@ -125,17 +125,28 @@ export const updateComment = async (req, res) => {
   }
 }
 
-export const deleteComment = async (volumeId, commentId) => {
+export const deleteComment = async (req, res) => {
+  const { volumeId, commentId } = req.params;
+
   try {
-    const res = await fetch(`${BASE_URL}/${volumeId}/comments/${commentId}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${tokenService.getToken()}`
-      }
-    })
-    return res.json()
-  } catch (error) {
-    console.log(error)
+    const book = await Book.findOne({ googleId: volumeId });
+
+    if (!book) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    const comment = book.comments.id(commentId);
+
+    if (!comment) {
+      return res.status(404).json({ error: 'Comment not found' });
+    }
+
+    comment.remove();
+    await book.save();
+
+    res.status(204).send(); // 204 means no content, the comment is successfully deleted.
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
   }
 }
-
