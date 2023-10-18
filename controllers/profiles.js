@@ -95,6 +95,10 @@ async function deleteShelf(req, res) {
   try {
     const deletedShelf = await Shelf.findByIdAndDelete(req.params.shelfId)
     if (!deletedShelf) return res.status(404).json("Shelf not found")
+    await Profile.updateMany(
+      { shelves: req.params.shelfId },
+      { $pull: { shelves: req.params.shelfId } }
+    )
     res.status(200).json(deletedShelf)
   } catch (error) {
     console.log(error)
