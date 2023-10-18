@@ -16,5 +16,6 @@ router.get('/:profileId/shelves', checkAuth, profilesCtrl.showShelves);
 router.post('/:profileId/shelves', checkAuth, profilesCtrl.createShelf)
 
 router.put('/:id/add-photo', checkAuth, profilesCtrl.addPhoto)
+router.put('/:profileId/shelves/:shelfId', checkAuth, profilesCtrl.editShelf)
 
 export { router }

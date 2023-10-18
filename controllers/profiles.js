@@ -82,6 +82,16 @@ async function showShelves(req, res) {
   }
 }
 
+async function editShelf(req, res) {
+  try {
+    const updatedShelf = await Shelf.findByIdAndUpdate(req.params.shelfId, req.body, { new: true });
+    if (!updatedShelf) return res.status(404).json("Shelf not found");
+    res.status(200).json(updatedShelf);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+}
 
 export { 
   index, 
@@ -89,4 +99,5 @@ export {
   show,
   createShelf,
   showShelves,
+  editShelf,
 }
