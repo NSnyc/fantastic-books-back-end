@@ -18,4 +18,6 @@ router.post('/:profileId/shelves', checkAuth, profilesCtrl.createShelf)
 router.put('/:id/add-photo', checkAuth, profilesCtrl.addPhoto)
 router.put('/:profileId/shelves/:shelfId', checkAuth, profilesCtrl.editShelf)
 
+router.delete('/:profileId/shelves/:shelfId', checkAuth, profilesCtrl.deleteShelf)
+
 export { router }

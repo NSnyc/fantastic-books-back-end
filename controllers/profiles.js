@@ -16,13 +16,11 @@ async function addPhoto(req, res) {
   try {
     const imageFile = req.files.photo.path
     const profile = await Profile.findById(req.params.id)
-
     const image = await cloudinary.uploader.upload(
       imageFile, 
       { tags: `${req.user.email}` }
     )
     profile.photo = image.url
-    
     await profile.save()
     res.status(201).json(profile.photo)
   } catch (err) {
@@ -63,7 +61,7 @@ async function createShelf(req, res) {
 
 async function showShelves(req, res) {
   try {
-    const profileId = req.params.profileId;
+    const profileId = req.params.profileId
     const profile = await Profile.findById(profileId).populate({
       path: 'shelves',
       select: 'name books',
@@ -84,12 +82,23 @@ async function showShelves(req, res) {
 
 async function editShelf(req, res) {
   try {
-    const updatedShelf = await Shelf.findByIdAndUpdate(req.params.shelfId, req.body, { new: true });
-    if (!updatedShelf) return res.status(404).json("Shelf not found");
+    const updatedShelf = await Shelf.findByIdAndUpdate(req.params.shelfId, req.body, { new: true })
+    if (!updatedShelf) return res.status(404).json("Shelf not found")
     res.status(200).json(updatedShelf);
   } catch (error) {
-    console.log(error);
-    res.status(500).json(error);
+    console.log(error)
+    res.status(500).json(error)
+  }
+}
+
+async function deleteShelf(req, res) {
+  try {
+    const deletedShelf = await Shelf.findByIdAndDelete(req.params.shelfId)
+    if (!deletedShelf) return res.status(404).json("Shelf not found")
+    res.status(200).json(deletedShelf)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error)
   }
 }
 
@@ -100,4 +109,5 @@ export {
   createShelf,
   showShelves,
   editShelf,
+  deleteShelf
 }
