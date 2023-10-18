@@ -1,5 +1,6 @@
 import { Profile } from '../models/profile.js'
 import { v2 as cloudinary } from 'cloudinary'
+import { Shelf } from "../models/shelf.js"
 
 async function index(req, res) {
   try {
@@ -33,7 +34,6 @@ async function addPhoto(req, res) {
 async function show(req, res){
   try {
     const profile = await Profile.findById(req.params.profileId)
-
     if(!profile){
       return res.status(404).json({error: 'Profile Not Found'})
     }
@@ -44,4 +44,26 @@ async function show(req, res){
   }
 }
 
-export { index, addPhoto, show }
+async function createShelf(req, res) {
+  try {
+    const profile = await Profile.findById(req.params.profileId);
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile Not Found' })
+    }
+    const newShelf = new Shelf({ name: req.body.name })
+    await newShelf.save()
+    profile.shelves.push(newShelf)
+    await profile.save()
+    res.status(201).json(newShelf)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json(error)
+  }
+}
+
+export { 
+  index, 
+  addPhoto, 
+  show,
+  createShelf,
+}

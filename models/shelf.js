@@ -1,17 +1,19 @@
 import mongoose from "mongoose"
 
-const Schema = mongoose.Schema
+const { Schema, model } = mongoose
 
 const shelfSchema = new Schema({
   name: String,
-  books: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Book'
-  }]
-},{
+  books: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Book',
+    },
+  ],
+}, {
   timestamps: true,
 })
 
-const Shelf = mongoose.model('Shelf', shelfSchema)
+const Shelf = model('Shelf', shelfSchema)
 
-export { Shelf } 
+export { Shelf }
