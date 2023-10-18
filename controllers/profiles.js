@@ -61,9 +61,32 @@ async function createShelf(req, res) {
   }
 }
 
+async function showShelves(req, res) {
+  try {
+    const profileId = req.params.profileId;
+    const profile = await Profile.findById(profileId).populate({
+      path: 'shelves',
+      select: 'name books',
+      populate: {
+        path: 'books',
+        model: 'Book',
+      },
+    })
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile Not Found' })
+    }
+    res.status(200).json(profile.shelves)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
+
 export { 
   index, 
   addPhoto, 
   show,
   createShelf,
+  showShelves,
 }

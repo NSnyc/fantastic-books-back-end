@@ -11,6 +11,7 @@ const router = Router()
 router.use(decodeUserFromToken)
 router.get('/', checkAuth, profilesCtrl.index)
 router.get('/:profileId', checkAuth, profilesCtrl.show)
+router.get('/:profileId/shelves', checkAuth, profilesCtrl.showShelves);
 
 router.post('/:profileId/shelves', checkAuth, profilesCtrl.createShelf)
 
