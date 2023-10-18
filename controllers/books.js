@@ -126,25 +126,21 @@ export const updateComment = async (req, res) => {
 }
 
 export const deleteComment = async (req, res) => {
-  const { volumeId, commentId } = req.params;
-
   try {
-    const book = await Book.findOne({ googleId: volumeId });
-
+    const { volumeId, commentId } = req.params
+    const book = await Book.findOne({ googleId: volumeId })
     if (!book) {
       return res.status(404).json({ error: 'Book not found' });
     }
-
-    const comment = book.comments.id(commentId);
-
+    //find the comment by its id
+    const comment = book.comments.id(commentId)
     if (!comment) {
       return res.status(404).json({ error: 'Comment not found' });
     }
+    book.comments.remove({_id: req.params.commentId})
+    await book.save()
 
-    comment.remove();
-    await book.save();
-
-    res.status(204).send(); // 204 means no content, the comment is successfully deleted.
+    res.status(200).json(book)
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
