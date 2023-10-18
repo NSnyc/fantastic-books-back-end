@@ -6,15 +6,14 @@ import { populate } from "dotenv";
 
 export async function bookSearch(req, res) {
   try {
-    // const bookData = req.bookData;
     const bookData = await googleMiddleware.fetchBooksMiddleware(req.body.searchTerm, req.body.startIndex)
-    // const startIndex = await googleMiddleware.fetchBooksMiddleware(req.body.startIndex)
     res.status(200).send(bookData);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
   }
 }
+
 export async function getBookDetails(req, res) {
   try {
     const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.params.volumeId)
@@ -23,7 +22,6 @@ export async function getBookDetails(req, res) {
       return res.status(404).json({ error: 'Book not found in the Google API' });
     }
 
-
     res.status(200).json(bookDetails);
   } catch (err) {
     console.log(err);
@@ -31,9 +29,11 @@ export async function getBookDetails(req, res) {
   }
 }
 
+
 export async function createComment(req, res) {
   try {
     console.log('reqUser:',req.user)
+    console.log('reqBODY:',req.body)
     req.body.commenter = req.user.profile
 
     const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.params.volumeId)
@@ -70,8 +70,8 @@ export async function createComment(req, res) {
         comments: [newComment]
       });
 
+      newBook.comments.push(newComment)
       await newBook.save();
-      const populatedComment = await newComment.execPopulate()
     }
     console.log('BOOKDETAILS:',bookDetails)
     console.log('comment', newComment)
@@ -86,12 +86,14 @@ export async function createComment(req, res) {
 export async function getComments(req, res){
   try {
     const { volumeId } = req.params;
+    
     const book = await Book.findOne({ googleId: volumeId })
     .populate('comments.commenter')
 
     if (!book) {
       return res.status(404).json({ error: 'Book not found' });
     }
+
     const comments = book.comments
     res.status(200).json(comments)
   } catch (err) {
@@ -99,3 +101,41 @@ export async function getComments(req, res){
     res.status(500).json(err);
   }
 }
+
+export const updateComment = async (req, res) => {
+  try {
+    console.log('REQBODY:', req.body)
+    const {volumeId, commentId} = req.params
+    console.log('volumeId:', req.params.volumeId);
+    console.log('commentId:', req.params.commentId);  
+    const book = await Book.findOne({ googleId: volumeId });
+
+    console.log('volumeId:', volumeId);
+    console.log('commentId:', commentId);
+    const comment = book.comments.id(commentId)
+    console.log('comment:', comment);
+    comment.text = req.body.text
+    comment.rating = req.body.rating
+    console.log('comment:', comment);
+    await book.save()
+    res.status(200).json
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+}
+
+export const deleteComment = async (volumeId, commentId) => {
+  try {
+    const res = await fetch(`${BASE_URL}/${volumeId}/comments/${commentId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${tokenService.getToken()}`
+      }
+    })
+    return res.json()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
