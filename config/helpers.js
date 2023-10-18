@@ -1,8 +1,10 @@
 const BASE_URL = `https://www.googleapis.com/books/v1/volumes`;
 
 export async function fetchBooksMiddleware(searchTerm, startIndex) {
+
   try {
     const bookResponse = await fetch(`${BASE_URL}?q=${searchTerm}&startIndex=${startIndex}&maxResults=10&key=${process.env.API_KEY}`);
+
     const bookData = await bookResponse.json();
     const bookInformation = bookData.items.map(book => ({
       id: book.id ? book.id : '',
@@ -25,11 +27,6 @@ export async function fetchBooksMiddleware(searchTerm, startIndex) {
 
 export async function getBookDetailsByIdMiddleware(volumeId) {
   try {
-    // const { volumeId } = req.params
-
-    // if (!volumeId) {
-    //   return res.status(400).json({ error: 'Missing volumeId in the request parameters' });
-    // }
 
     const response = await fetch(`${BASE_URL}/${volumeId}?key=${process.env.API_KEY}`);
     const bookData = await response.json();
@@ -53,7 +50,7 @@ export async function getBookDetailsByIdMiddleware(volumeId) {
       url: bookData.volumeInfo.previewLink ? bookData.volumeInfo.previewLink : '',
     };
 
-    return bookDetails; // Move to the next middleware or route handler
+    return bookDetails; 
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch book details' });
