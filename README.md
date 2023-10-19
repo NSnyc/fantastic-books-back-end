@@ -1,79 +1,58 @@
-# Decoupled MERN Stack with JWT Auth Template - Back End
+# [Fantastic Books]()
+###### <p>And where to find them.</p>
 
-This is the back end of a decoupled MERN Stack app that includes JWT Authentication.
+### [Check it out here!]()
+###### [Fantastic Books: The Front End](https://github.com/NSnyc/fantastic-books-front-end)
 
-When combined with the front end found [here](https://github.com/SEI-Remote/decoupled-mern-jwt-auth-template-front-end), you'll have all you need to build a full stack MERN app!
+<img width="338" alt="Screen Shot 2023-05-18 at 2 26 38 PM" src="">
 
-Use this to go build things! 🚀
+## What is this?
 
-## To Use This Template
+Fantastic Books is a MERN stack CRUD app that makes it convenient to keep track of your all the books you will need for all you bibliophilic delights! Dive 20,000 leagues into a personalized reading journey, where you can create custom shelves to curate your tales of wonder and mystery. Whether you're charting the realms of books you've journeyed through, setting sail to the titles on your next adventure list, or unearthing niche categories from the forgotten corners of literature, our platform is your one stop shop for all you will need on you adventure!
 
-**Replace `<name-of-your-app-here>` (including the `<` and `>`) in the commands below with the name of your app!**
+## Getting Started
+[Fantastic books: The App]()
+<br />
+[Check out our Trello board here!](https://trello.com/b/AJpyaYO6/fantastic-books-and-where-to-find-them)
+<br />
+If you are curious about what our front end looks like - [Fantastic Books: The Front End](https://github.com/NSnyc/fantastic-books-front-end/)
 
-```bash
-git clone https://github.com/SEI-Remote/decoupled-mern-jwt-auth-template-back-end <name-of-your-app-here>-back-end
-cd <name-of-your-app-here>-back-end
-code .
-```
+## The Devs
 
-With the project open in VS Code, open a terminal and run:
+#### Scrum Manager and Styler:  
+###### Carla Pacheco [Github](https://github.com/andrewmorrisondev) [Linked In](https://www.linkedin.com/in/thecarlapacheco/)
+<br />
 
-```bash
-rm -rf .git
-```
+### Api Manager and Git Comander
+##### Enes Velovic [Github](https://github.com/nonchalamment) [Linked In](https://www.linkedin.com/in/enesvelovic/)
+<br />
 
-Here's what your command line output should like after this step (note that the indicator that we are in a git repository is gone!)
+### Database Manager and Documentor
+##### Steven Morrison [Github](https://github.com/trentonwahr) [Linked In](https://www.linkedin.com/in/steven-ansman-morrison/)
 
-<img src="https://i.imgur.com/L47kNOZ.png" alt="The command line before and after running the rm -rf .git command. Before git:(main) is visible indiating that the directory contains a git repository, after the command it is not.">
 
-Re-initialize a git repository:
+## Attributions
+google books api
 
-```bash
-git init
-```
+## Technologies Used
+<ul>
+  <li>Mongoose.js</li>
+  <li>Express.js</li>
+  <li>React.js</li>
+  <li>Node.js</li>
+  <li>Postman</li>
+  <li>MongoDB</li>
+  <li>JSON Web Token Auth (JWT)</li>
+  <li>AJAX</li>
+   <li>Cloudinary</li>
+  <li>Vite</li>
+  <li>JavaScript</li>
+  <li>HTML/CSS</li>
+  <li>Netlify</li>
+  <li>Fly.io</li>
+  <li>Git</li>
+  <li>Github</li>
+</ul>
 
-Create a repo for this project on GitHub and add that remote to your project with (replacing your-repo-URL-here with the URL of the repo you just created):
+## Next Steps
 
-```bash
-git remote add origin your-repo-URL-here
-```
-
-Run `npm i` to fetch the template's dependencies:
-
-```bash
-npm i
-```
-
-touch a `.env` file:
-
-```bash
-touch .env
-```
-
-Fill it with the following:
-
-```
-DATABASE_URL=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-CLOUDINARY_URL=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-```
-
-Replace the `DATABASE_URL`, `SECRET`, and `CLOUDINARY_URL` with values that you provide.
-
-> 🚨 Place secrets in this `.env` file. The contents of this file WILL NOT be exposed to site visitors.
-
-Delete this `README.md`, then make an initial commit:
-
-```bash
-git add .
-git commit -m "initial commit"
-git push origin main
-```
-
-Launch the app with:
-
-```bash
-nodemon
-```
-
-You're done!
