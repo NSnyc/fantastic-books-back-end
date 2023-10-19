@@ -9,7 +9,6 @@ const router = Router()
 // GET localhost:3001
 router.get('/:volumeId',  bookCtrl.getBookDetails)
 router.get('/:volumeId/comments', bookCtrl.getComments)
-router.get('/:volumeId/comments/:commentId', bookCtrl.getOneComment)
 router.post('/', bookCtrl.bookSearch);
 
 /*---------- Protected Routes ----------*/
