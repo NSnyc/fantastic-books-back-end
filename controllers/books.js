@@ -94,7 +94,7 @@ export async function getComments(req, res){
       return res.status(404).json({ error: 'Book not found' });
     }
     const comments = book.comments
-    const sortedComments = comments.sort((a, b) => new Date(b.date) - new Date(a.date))
+    const sortedComments = comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     res.status(200).json(sortedComments)
     // res.status(200).json(comments)
   } catch (err) {
