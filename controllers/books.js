@@ -1,8 +1,6 @@
 import { Book } from "../models/book.js"
 import { Profile } from "../models/profile.js"
 import * as googleMiddleware from '../config/helpers.js'
-import { populate } from "dotenv";
-
 
 export async function bookSearch(req, res) {
   try {
@@ -68,7 +66,7 @@ export async function createComment(req, res) {
         url: bookDetails.url ? bookDetails.url : '',
         googleId: bookDetails.googleId,
         comments: [newComment]
-      });
+      })
 
       newBook.comments.push(newComment)
       await newBook.save();

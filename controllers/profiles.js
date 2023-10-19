@@ -1,6 +1,8 @@
 import { Profile } from '../models/profile.js'
 import { v2 as cloudinary } from 'cloudinary'
 import { Shelf } from "../models/shelf.js"
+import { Book } from "../models/book.js"
+import * as googleMiddleware from '../config/helpers.js'
 
 async function index(req, res) {
   try {
@@ -106,6 +108,58 @@ async function deleteShelf(req, res) {
   }
 }
 
+async function addBookToShelf(req, res) {
+  console.log('test')
+  try {
+    const profile = await Profile.findById(req.user.profile)
+    if (!profile) {
+      return res.status(404).send('Profile not found')
+    }
+    const shelf = await Shelf.findById(req.params.shelfId)
+    if (!shelf) {
+      return res.status(404).send('Shelf not found')
+    }
+    const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.params.volumeId)
+    if (!bookDetails) {
+      return res.status(404).json({ error: 'Book not found in the Google API' });
+    }
+    if (shelf.books.includes(req.params.volumeId)) {
+      return res.status(400).send('Book already in the shelf')
+    }
+    const existingBook = await Book.findOne({ googleId: bookDetails.googleId })
+    if (existingBook) {
+      shelf.books.push(existingBook)
+      await shelf.save()
+    } else {
+      console.log('book does not exists')
+      const shelvedBook = new Book({
+        title: bookDetails.title ? bookDetails.title : '',
+        subtitle: bookDetails.subtitle ? bookDetails.subtitle : '',
+        authors : bookDetails.authors ? bookDetails.authors : [],
+        cover: bookDetails.cover ? bookDetails.cover : '',
+        published: bookDetails.published ? bookDetails.published : '',
+        description: bookDetails.description ? bookDetails.description : '',
+        pages: bookDetails.pages ? bookDetails.pages : 0,
+        categories: bookDetails.categories ? bookDetails.categories : [],
+        url: bookDetails.url ? bookDetails.url : '',
+        googleId: bookDetails.googleId,
+        comments: [comments],
+      })
+      await shelvedBook.save()
+      shelf.books.push(shelvedBook)
+      await shelf.save()
+    }
+    const updatedProfile = await Profile.findById(req.params.profileId).populate('shelves')
+    if(!updatedProfile){
+      return res.status(404).json({error: 'Profile Not Found'})
+    }
+    res.status(200).json(updatedProfile)
+  } catch (err) {
+    console.log(err)
+    res.status(500).json(err)
+  }
+}
+
 export { 
   index, 
   addPhoto, 
@@ -113,5 +167,6 @@ export {
   createShelf,
   showShelves,
   editShelf,
-  deleteShelf
+  deleteShelf,
+  addBookToShelf
 }
