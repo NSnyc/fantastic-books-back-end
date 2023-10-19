@@ -51,7 +51,7 @@ export async function createComment(req, res) {
     };
 
     const existingBook = await Book.findOne({ googleId: bookDetails.googleId })
-
+    // const profile = await Profile.findById(req.user.profile)
     if (existingBook) {
       existingBook.comments.push(newComment);
       await existingBook.save();
@@ -74,8 +74,8 @@ export async function createComment(req, res) {
       await newBook.save();
     }
     console.log('BOOKDETAILS:',bookDetails)
-    console.log('comment', newComment)
-    
+    console.log('waffle', newComment)
+    // newComment.commenter = profile
     res.status(201).json(newComment);
   } catch (err) {
     console.log(err);
@@ -106,19 +106,20 @@ export const updateComment = async (req, res) => {
   try {
     console.log('REQBODY:', req.body)
     const {volumeId, commentId} = req.params
-    console.log('volumeId:', req.params.volumeId);
-    console.log('commentId:', req.params.commentId);  
+    // console.log('volumeId:', req.params.volumeId);
+    // console.log('commentId:', req.params.commentId);  
     const book = await Book.findOne({ googleId: volumeId });
-
-    console.log('volumeId:', volumeId);
-    console.log('commentId:', commentId);
+    const profile = await Profile.findById(req.user.profile)
+    // console.log('volumeId:', volumeId);
+    // console.log('commentId:', commentId);
     const comment = book.comments.id(commentId)
     console.log('comment:', comment);
     comment.text = req.body.text
     comment.rating = req.body.rating
     console.log('comment:', comment);
+    comment.commenter = profile
     await book.save()
-    res.status(200).json
+    res.status(200).json(comment)
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
