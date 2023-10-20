@@ -171,6 +171,32 @@ async function addBookToShelf(req, res) {
   }
 }
 
+async function removeBookFromShelf(req, res) {
+  try {
+    const { profileId, shelfId, bookId } = req.params
+    const profile = await Profile.findById(profileId)
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile Not Found' })
+    }
+    const shelf = await Shelf.findById(shelfId);
+    if (!shelf) {
+      return res.status(404).json({ error: 'Shelf Not Found' })
+    }
+    const bookIndex = shelf.books.indexOf(bookId);
+    if (bookIndex === -1) {
+      return res.status(400).json({ error: 'Book not found in the shelf' })
+    }
+    shelf.books.splice(bookIndex, 1)
+    await shelf.save()
+
+    // Respond with a success status code
+    res.status(200).json({ message: 'Book removed from shelf successfully' })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+}
+
 export { 
   index, 
   addPhoto, 
@@ -179,5 +205,6 @@ export {
   showShelves,
   editShelf,
   deleteShelf,
-  addBookToShelf
+  addBookToShelf,
+  removeBookFromShelf,
 }
