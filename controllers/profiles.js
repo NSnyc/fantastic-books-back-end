@@ -58,6 +58,9 @@ async function createShelf(req, res) {
     if (!profile) {
       return res.status(404).json({ error: 'Profile Not Found' })
     }
+    if (req.user.profile.toString() !== profile._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     const newShelf = new Shelf({ name: req.body.name })
     await newShelf.save()
     profile.shelves.push(newShelf)
@@ -94,6 +97,10 @@ async function editShelf(req, res) {
   try {
     const updatedShelf = await Shelf.findByIdAndUpdate(req.params.shelfId, req.body, { new: true })
     if (!updatedShelf) return res.status(404).json("Shelf not found")
+    const profile = await Profile.findOne({ shelves: updatedShelf._id });
+    if (req.user.profile.toString() !== profile._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     res.status(200).json(updatedShelf);
   } catch (error) {
     console.log(error)
@@ -105,6 +112,12 @@ async function deleteShelf(req, res) {
   try {
     const deletedShelf = await Shelf.findByIdAndDelete(req.params.shelfId)
     if (!deletedShelf) return res.status(404).json("Shelf not found")
+
+    // Check if the user is the owner of the profile associated with the shelf
+    const profile = await Profile.findOne({ shelves: deletedShelf._id });
+    if (req.user.profile.toString() !== profile._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     await Profile.updateMany(
       { shelves: req.params.shelfId },
       { $pull: { shelves: req.params.shelfId } }
@@ -122,6 +135,9 @@ async function addBookToShelf(req, res) {
     if (!profile) return res.status(404).send('Profile not found')
     const shelf = await Shelf.findById(req.params.shelfId)
     if (!shelf) return res.status(404).send('Shelf not found')
+    if (req.user.profile.toString() !== profile._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     let existingBook = await Book.findOne({ googleId: req.params.volumeId });
     if (existingBook && shelf.books.includes(existingBook._id)) {
       return res.status(400).send('Book already in the shelf')
