@@ -33,7 +33,15 @@ async function addPhoto(req, res) {
 
 async function show(req, res){
   try {
-    const profile = await Profile.findById(req.params.profileId).populate('shelves')
+    const profile = await Profile.findById(req.params.profileId)
+      .populate({
+        path: 'shelves',
+        select: 'name books',
+        populate: {
+          path: 'books',
+          model: 'Book',
+        },
+      })
     if(!profile){
       return res.status(404).json({error: 'Profile Not Found'})
     }
@@ -114,7 +122,10 @@ async function addBookToShelf(req, res) {
     if (!profile) return res.status(404).send('Profile not found')
     const shelf = await Shelf.findById(req.params.shelfId)
     if (!shelf) return res.status(404).send('Shelf not found')
-    if (shelf.books.includes(req.params.volumeId)) return res.status(400).send('Book already in the shelf')
+    let existingBook = await Book.findOne({ googleId: req.params.volumeId });
+    if (existingBook && shelf.books.includes(existingBook._id)) {
+      return res.status(400).send('Book already in the shelf')
+    }
     const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.params.volumeId)
     if (!bookDetails) return res.status(404).json({ error: 'Book not found in the Google API' })
     let shelvedBook = await Book.findOne({ googleId: bookDetails.googleId })
