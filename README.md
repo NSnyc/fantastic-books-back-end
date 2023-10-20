@@ -1,4 +1,4 @@
-# [Fantastic Books]()
+# [Fantastic Books](https://fantastic-books.netlify.app/)
 ###### <p>And where to find them.</p>
 
 ### [Check it out here!]()
@@ -29,30 +29,3 @@ If you are curious about what our front end looks like - [Fantastic Books: The F
 
 ### Database Manager and Documentor
 ##### Steven Morrison [Github](https://github.com/trentonwahr) [Linked In](https://www.linkedin.com/in/steven-ansman-morrison/)
-
-
-## Attributions
-google books api
-
-## Technologies Used
-<ul>
-  <li>Mongoose.js</li>
-  <li>Express.js</li>
-  <li>React.js</li>
-  <li>Node.js</li>
-  <li>Postman</li>
-  <li>MongoDB</li>
-  <li>JSON Web Token Auth (JWT)</li>
-  <li>AJAX</li>
-   <li>Cloudinary</li>
-  <li>Vite</li>
-  <li>JavaScript</li>
-  <li>HTML/CSS</li>
-  <li>Netlify</li>
-  <li>Fly.io</li>
-  <li>Git</li>
-  <li>Github</li>
-</ul>
-
-## Next Steps
-
