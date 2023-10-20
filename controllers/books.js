@@ -2,6 +2,7 @@ import { Book } from "../models/book.js"
 import { Profile } from "../models/profile.js"
 import * as googleMiddleware from '../config/helpers.js'
 import { populate } from "dotenv"
+import { format } from "date-fns"
 
 export async function bookSearch(req, res) {
   try {
@@ -47,7 +48,10 @@ export async function createComment(req, res) {
       text,
       commenter: req.user.profile,
       rating: rating || 5
+      
     };
+
+
     await Profile.populate(newComment, { path: 'commenter' })
     const existingBook = await Book.findOne({ googleId: bookDetails.googleId })
     // const profile = await Profile.findById(req.user.profile)
@@ -94,9 +98,8 @@ export async function getComments(req, res){
       return res.status(404).json({ error: 'Book not found' });
     }
     const comments = book.comments
-    const sortedComments = comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    res.status(200).json(sortedComments)
-    // res.status(200).json(comments)
+
+    res.status(200).json(comments)
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
