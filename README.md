@@ -28,6 +28,7 @@ Explore our front end here: [Fantastic Books: The Front End](https://github.com/
 <br />
 
 ### Database Manager and Documentor
+
 ##### Steven Morrison [Github](https://github.com/venmorr) [Linked In](https://www.linkedin.com/in/steven-ansman-morrison/)
 
 
@@ -53,4 +54,3 @@ Google Books API
   <li>Git</li>
   <li>Github</li>
 </ul>
-

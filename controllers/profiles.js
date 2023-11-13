@@ -33,7 +33,15 @@ async function addPhoto(req, res) {
 
 async function show(req, res){
   try {
-    const profile = await Profile.findById(req.params.profileId).populate('shelves')
+    const profile = await Profile.findById(req.params.profileId)
+      .populate({
+        path: 'shelves',
+        select: 'name books',
+        populate: {
+          path: 'books',
+          model: 'Book',
+        },
+      })
     if(!profile){
       return res.status(404).json({error: 'Profile Not Found'})
     }
@@ -49,6 +57,9 @@ async function createShelf(req, res) {
     const profile = await Profile.findById(req.params.profileId);
     if (!profile) {
       return res.status(404).json({ error: 'Profile Not Found' })
+    }
+    if (req.user.profile.toString() !== profile._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
     }
     const newShelf = new Shelf({ name: req.body.name })
     await newShelf.save()
@@ -86,6 +97,10 @@ async function editShelf(req, res) {
   try {
     const updatedShelf = await Shelf.findByIdAndUpdate(req.params.shelfId, req.body, { new: true })
     if (!updatedShelf) return res.status(404).json("Shelf not found")
+    const profile = await Profile.findOne({ shelves: updatedShelf._id });
+    if (req.user.profile.toString() !== profile._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     res.status(200).json(updatedShelf);
   } catch (error) {
     console.log(error)
@@ -97,6 +112,12 @@ async function deleteShelf(req, res) {
   try {
     const deletedShelf = await Shelf.findByIdAndDelete(req.params.shelfId)
     if (!deletedShelf) return res.status(404).json("Shelf not found")
+
+    // Check if the user is the owner of the profile associated with the shelf
+    const profile = await Profile.findOne({ shelves: deletedShelf._id });
+    if (req.user.profile.toString() !== profile._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     await Profile.updateMany(
       { shelves: req.params.shelfId },
       { $pull: { shelves: req.params.shelfId } }
@@ -114,7 +135,13 @@ async function addBookToShelf(req, res) {
     if (!profile) return res.status(404).send('Profile not found')
     const shelf = await Shelf.findById(req.params.shelfId)
     if (!shelf) return res.status(404).send('Shelf not found')
-    if (shelf.books.includes(req.params.volumeId)) return res.status(400).send('Book already in the shelf')
+    if (req.user.profile.toString() !== profile._id.toString()) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    let existingBook = await Book.findOne({ googleId: req.params.volumeId });
+    if (existingBook && shelf.books.includes(existingBook._id)) {
+      return res.status(400).send('Book already in the shelf')
+    }
     const bookDetails = await googleMiddleware.getBookDetailsByIdMiddleware(req.params.volumeId)
     if (!bookDetails) return res.status(404).json({ error: 'Book not found in the Google API' })
     let shelvedBook = await Book.findOne({ googleId: bookDetails.googleId })
@@ -144,6 +171,32 @@ async function addBookToShelf(req, res) {
   }
 }
 
+async function removeBookFromShelf(req, res) {
+  try {
+    const { profileId, shelfId, bookId } = req.params
+    const profile = await Profile.findById(profileId)
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile Not Found' })
+    }
+    const shelf = await Shelf.findById(shelfId);
+    if (!shelf) {
+      return res.status(404).json({ error: 'Shelf Not Found' })
+    }
+    const bookIndex = shelf.books.indexOf(bookId);
+    if (bookIndex === -1) {
+      return res.status(400).json({ error: 'Book not found in the shelf' })
+    }
+    shelf.books.splice(bookIndex, 1)
+    await shelf.save()
+
+    // Respond with a success status code
+    res.status(200).json({ message: 'Book removed from shelf successfully' })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+}
+
 export { 
   index, 
   addPhoto, 
@@ -152,5 +205,6 @@ export {
   showShelves,
   editShelf,
   deleteShelf,
-  addBookToShelf
+  addBookToShelf,
+  removeBookFromShelf,
 }

@@ -20,5 +20,7 @@ router.put('/:id/add-photo', checkAuth, profilesCtrl.addPhoto)
 router.put('/:profileId/shelves/:shelfId', checkAuth, profilesCtrl.editShelf)
 
 router.delete('/:profileId/shelves/:shelfId', checkAuth, profilesCtrl.deleteShelf)
+router.delete('/:profileId/shelves/:shelfId/books/:bookId', checkAuth, profilesCtrl.removeBookFromShelf);
+
 
 export { router }
